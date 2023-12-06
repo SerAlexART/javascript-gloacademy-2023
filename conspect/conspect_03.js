@@ -44,7 +44,7 @@ console.log(Number('123'));
 console.log(Number('123s'));
 console.log(Number(123));
 
-// Метод Noolean переводит всё переданное в него в булевые значения
+// Метод Boolean переводит всё переданное в него в булевые значения
 console.log(Boolean(''));
 console.log(Boolean(null));
 console.log(Boolean(undefined));

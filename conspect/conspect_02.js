@@ -99,7 +99,7 @@ n += 5; // Короткая запись
 
 // *Операторы сравнения
 console.log(5 > 2); // Больше
-console.log(5 < 2); // Меньще
+console.log(5 < 2); // Меньше
 console.log(5 >= 2); // Больше или ровно
 console.log(5 <= 2); // Меньше или ровно
 
@@ -177,3 +177,24 @@ console.log(strMassive.split(' ')); // Если указать параметр 
 
 console.log(strMassiveComma.split(', ')); // Если указать параметр запятой с пробелом ', ', то строка разобьётся на массив с несколькими значениями
 
+
+
+
+
+// * Полезные методы из урока 5
+
+// Метод isNaN() - если значение будет NaN, то вернёт true, в другом случае false
+console.log(isNaN(2)); // вернёт false
+console.log(isNaN(5)); // вернёт false
+console.log(isNaN(5 * '5 sss')); // вернёт true
+
+// Метод trim() - убирает пробелы слева и справа от первого и последнего символа строки и за символ он действительно принимает введённый символ игнорируя пробелы
+console.log('     '.trim().length);
+console.log('   s sdds ss  '.trim());
+
+// Метод isFinite - проверяет является ли переданное значением конечным числом, не пропускает строку, которая не является числом
+console.log(isFinite(2)); // вернёт true
+console.log(isFinite('5')); // вернёт true
+console.log(isFinite('5' * 5)); // вернёт true
+console.log(isFinite('5 asdasd')); // вернёт false
+console.log(isFinite('5 asdasd' + 5)); // вернёт false
