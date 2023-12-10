@@ -1,6 +1,6 @@
 'use strict';
 
-const rollback = 55;
+const rollback = 15;
 
 let title;
 let screens;
@@ -22,13 +22,11 @@ const isNumber = function (num) {
     return !isNaN(parseFloat(num)) && isFinite(num);
 };
 
+// Функция с вопросами о проекте
 const asking = function () {
-    title = prompt('Как называется ваш проект?', 'Задание 5.');
+    title = prompt('Как называется ваш проект?', 'Задание 7.');
     screens = prompt('Какие типы экранов нужно разработать?', 'Простые, Сложные, Интерактивные').toLocaleLowerCase().split(', ');
-    // screenPrice = +prompt('Сколько будет стоить данная работа?', '12000');
-    // screenPrice = prompt('Сколько будет стоить данная работа?', '12000');
 
-    // 1) Переписать получение значения переменной screenPrice циклом do while. Вопрос должен задаваться один раз обязательно, далее уже по условию
     do {
         screenPrice = +prompt('Сколько будет стоить данная работа?', '12000');
     } while (!isNumber(screenPrice));
@@ -36,16 +34,10 @@ const asking = function () {
     adaptiv = Boolean(prompt('Нужен ли адаптив на сайте?', 'Адаптив нужен.'));
 };
 
-// Функция возвращает сумму всех дополнительных услуг
-// Тип - function expression
-// const getAllServicePrices = function () {
-//     return servicePrice1 + servicePrice2;
-// };
-
-
-// 3) Поправить проект так, чтоб расчеты велись верно. Проверить типы получаемых переменных и привести их к нужным.
+// Функция возвращает сумму всех дополнительных услуг с проверкой, что введённые данные являются числом, которые мы получаем на вопрос "Сколько это будет стоить"
 const getAllServicePrices = function () {
     const message = 'Сколько это будет стоить?';
+
     let sum = 0;
     let price = 0;
 
@@ -55,9 +47,9 @@ const getAllServicePrices = function () {
                 service1 = prompt('Какой дополнительный тип услуги нужен?', 'Вёрстка модального окна');
                 price = 222;
 
-                    do {
-                        sum = +prompt(message, price);
-                    } while (!isNumber(sum))
+                do {
+                    sum = +prompt(message, price);
+                } while (!isNumber(sum));
 
             } else if (i === 1) {
                 service2 = prompt('Какой дополнительный тип услуги нужен?', 'Написание скриптов для модального окна');
@@ -65,7 +57,7 @@ const getAllServicePrices = function () {
 
                 do {
                     sum = +prompt(message, price);
-                } while (!isNumber(sum))
+                } while (!isNumber(sum));
             }
 
         } while (!isNumber(sum));
@@ -116,15 +108,3 @@ showTypeOf(getRollbackMessage());
 adaptiv == true ? showTypeOf('Адаптив нужен.') : showTypeOf('Адаптив не нужен.');
 showTypeOf('Итоговая стоимость будет равна ' + fullPrice + 'р.');
 showTypeOf('Итоговая стоимость с учётом вычета отката будет равна ' + servicePercentPrice + 'р.');
-
-// showTypeOf('getAllServicePrices', typeof allServicePrices, allServicePrices); // Проверка переменной
-
-// console.log(screens.length);
-// console.log('Стоимость разработки сайта ' + fullPrice + ' рублей');
-// console.log(screens);
-// console.log(fullPrice * (rollback / 100));
-
-// console.log('First log.');
-// alert('Important!');
-
-// console.log(sum);
