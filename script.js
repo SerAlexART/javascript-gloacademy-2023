@@ -47,6 +47,11 @@ const appData = {
         appData.adaptiv = confirm('Нужен ли адаптив на сайте?');
     },
 
+    // 2) Создать в объекте метод start и перенести в него вызов метода asking и переопределение свойств. Вне самого объекта запускаем только метод start который в нужном порядке выполнит все действия.
+    start: function (getAsking) {
+        return getAsking = appData.asking();
+    },
+
     // Превращаем функцию isNumber в метод объекта appData
     //  Чуть ли не лучшая проверка в JS на число
     isNumber: function (num) {
@@ -123,7 +128,7 @@ const appData = {
 
 
 // Вызов методов объекта appData
-appData.asking();
+appData.start();
 appData.title = appData.getTitle();
 appData.allServicePrices = appData.getAllServicePrices();
 appData.fullPrice = appData.getFullPrice();
