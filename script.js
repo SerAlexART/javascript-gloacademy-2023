@@ -47,11 +47,6 @@ const appData = {
         appData.adaptiv = confirm('Нужен ли адаптив на сайте?');
     },
 
-    // 2) Создать в объекте метод start и перенести в него вызов метода asking и переопределение свойств. Вне самого объекта запускаем только метод start который в нужном порядке выполнит все действия.
-    start: function (getAsking) {
-        return getAsking = appData.asking();
-    },
-
     // Превращаем функцию isNumber в метод объекта appData
     //  Чуть ли не лучшая проверка в JS на число
     isNumber: function (num) {
@@ -121,24 +116,73 @@ const appData = {
         } else {
             return 'Что то пошло не так.';
         }
+    },
+
+    // 2) Создать в объекте метод start и перенести в него вызов метода asking и переопределение свойств. Вне самого объекта запускаем только метод start который в нужном порядке выполнит все действия.
+    start: function () {
+        appData.asking();
+        appData.title = appData.getTitle();
+        appData.allServicePrices = appData.getAllServicePrices();
+        appData.fullPrice = appData.getFullPrice();
+        appData.servicePercentPrice = appData.getServicePercentPrices();
+        // appData.loggerMessage();
+        appData.logger();
+    },
+
+    // 3) Создать в объекте метод logger который будет выводить в консоль необходимую информацию. Данный метод запускаем в самом конце метода start (после того как все расчеты уже были произведены)
+    logger: function () {
+        console.log('Название проекта ' + '"' + appData.title + '"');
+        console.log('Типы экранов, которые нужно разработать: ' + appData.screens.join(', ') + '.');
+
+        if (appData.adaptiv == true) {
+            console.log('Адаптив нужен.');
+        } else { console.log('Адаптив не нужен.'); }
+
+        console.log('Откат равен ' + appData.rollback + '%.');
+        console.log(appData.getRollbackMessage());
+        console.log('Итоговая стоимость дополнительных услуг будет равна ' + appData.allServicePrices + 'р.');
+        console.log('Итоговая стоимость будет равна ' + appData.fullPrice + 'р.');
+        console.log('Итоговая стоимость с учётом вычета отката будет равна ' + appData.servicePercentPrice + 'р.');
+
+        // 4) Вывести в консоль из метода logger все свойства и методы объекта appData с помощью цикла for in
+        for (let key in appData) {
+            console.log('Ключ ' + key + '. ' + 'Значение: ' + appData[key] + '.');
+        }
+    },
+
+    // Метод возвращает информацию в удобночитаемом формате
+    loggerMessage: function () {
+        console.log('Название проекта ' + '"' + appData.title + '"');
+        console.log('Типы экранов, которые нужно разработать: ' + appData.screens.join(', ') + '.');
+
+        if (appData.adaptiv == true) {
+            console.log('Адаптив нужен.');
+        } else { console.log('Адаптив не нужен.'); }
+
+        console.log('Откат равен ' + appData.rollback + '%.');
+        console.log(appData.getRollbackMessage());
+        console.log('Итоговая стоимость дополнительных услуг будет равна ' + appData.allServicePrices + 'р.');
+        console.log('Итоговая стоимость будет равна ' + appData.fullPrice + 'р.');
+        console.log('Итоговая стоимость с учётом вычета отката будет равна ' + appData.servicePercentPrice + 'р.');
     }
 };
 
-
-
-
 // Вызов методов объекта appData
 appData.start();
-appData.title = appData.getTitle();
-appData.allServicePrices = appData.getAllServicePrices();
-appData.fullPrice = appData.getFullPrice();
-appData.servicePercentPrice = appData.getServicePercentPrices();
+
+
+
+
+// appData.title = appData.getTitle();
+// appData.allServicePrices = appData.getAllServicePrices();
+// appData.fullPrice = appData.getFullPrice();
+// appData.servicePercentPrice = appData.getServicePercentPrices();
+// appData.logger();
 
 
 
 // Вывод значений в консоль
-console.log('Итоговая стоимость будет равна ' + appData.fullPrice + ', а с учётом вычета отката будет равна ' + appData.servicePercentPrice);
-
+// console.log('Итоговая стоимость будет равна ' + appData.fullPrice + ', а с учётом вычета отката будет равна ' + appData.servicePercentPrice);
 
 // showTypeOf('Название проекта ' + '"' + title + '".');
 // showTypeOf('Типы экранов, которые нужно разработать: ' + screens + '.');
