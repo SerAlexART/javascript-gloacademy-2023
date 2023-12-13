@@ -24,153 +24,208 @@
 const appData = {
     // Переносим все переменные в объект и каждому свойству должны задать изначальное значение !!!
     title: '',
-    screens: '',
+    screens: [],
     screenPrice: 0,
     adaptiv: true,
     rollback: 15,
     allServicePrices: 0,
     fullPrice: 0,
     servicePercentPrice: 0,
-    service1: '',
-    service2: '',
+    services: {}, // делаем по умолчанию объектом
+    // service1: '',
+    // service2: '',
 
-    // Превращаем функцию asking в метод объекта appData и обращение к бывшим переменным через объект, например было title, а стало appData.title
-    // Метод с вопросами о проекте
-    asking: function () {
-        appData.title = prompt('Как называется ваш проект?', 'Задание 7.');
-        appData.screens = prompt('Какие типы экранов нужно разработать?', 'Простые, Сложные, Интерактивные').toLocaleLowerCase().split(', ');
+    // Метод start запускает вызов функций
+    start: function () {
+        appData.asking();
 
-        do {
-            appData.screenPrice = +prompt('Сколько будет стоить данная работа?', '12000');
-        } while (!appData.isNumber(appData.screenPrice));
+        appData.addPrices();
+        appData.getTitle();
+        // appData.getAllServicePrices();
+        appData.getFullPrice();
+        appData.getServicePercentPrices();
 
-        appData.adaptiv = confirm('Нужен ли адаптив на сайте?');
+        // appData.loggerMessage();
+        appData.logger();
     },
 
-    // Превращаем функцию isNumber в метод объекта appData
     //  Чуть ли не лучшая проверка в JS на число
     isNumber: function (num) {
         return !isNaN(parseFloat(num)) && isFinite(num);
     },
 
-    // Превращаем функцию getAllServicePrices в метод объекта appData
-    // Метод возвращает сумму всех дополнительных услуг с проверкой, что введённые данные являются числом, которые мы получаем на вопрос "Сколько это будет стоить"
-    getAllServicePrices: function () {
-        const message = 'Сколько это будет стоить?';
+    // Метод с вопросами о проекте
+    asking: function () {
 
-        let sum = 0;
-        let price = 0;
+        // 1-1) - ответ на вопрос "Как называется ваш проект?" - строка
+        do {
+            appData.title = prompt('Как называется ваш проект?', 'Задание 8');
+        } while (appData.isNumber(appData.title));
+        // appData.screens = prompt('Какие типы экранов нужно разработать?', 'Простые, Сложные, Интерактивные').toLocaleLowerCase().split(', ');
 
+        // do {
+        //     appData.screenPrice = +prompt('Сколько будет стоить данная работа?', '12000');
+        // } while (!appData.isNumber(appData.screenPrice));
+
+        appData.adaptiv = confirm('Нужен ли адаптив на сайте?');
+
+        // Цикл с типом экранов
         for (let i = 0; i < 2; i++) {
+            let name = '';
+            let price = 0;
+            // let nameDefault = 'Тип экрана №' + (i + 1);
+            let nameDefault;
+            // let priceDefault = i + 100;
+            let priceDefault;
+
+            if (i == 0) {
+                nameDefault = 'Простые';
+                priceDefault = 1000;
+            } else {
+                nameDefault = 'Сложные';
+                priceDefault = 1500;
+            }
+
+            // 1-2) - ответ на вопрос "Какие типы экранов нужно разработать?" - строка
             do {
-                if (i === 0) {
-                    appData.service1 = prompt('Какой дополнительный тип услуги нужен?', 'Вёрстка модального окна');
-                    price = 222;
+                name = prompt('Какие типы экранов нужно разработать?', nameDefault);
+            } while (appData.isNumber(name));
 
-                    do {
-                        sum = +prompt(message, price);
-                    } while (!appData.isNumber(sum));
+            // 1-3) - ответ на вопрос "Сколько будет стоить данная работа?" - число
+            do {
+                price = prompt('Сколько будет стоить данная работа?', priceDefault);
+            } while (!appData.isNumber(price));
 
-                } else if (i === 1) {
-                    appData.service2 = prompt('Какой дополнительный тип услуги нужен?', 'Написание скриптов для модального окна');
-                    price = 555;
-
-                    do {
-                        sum = +prompt(message, price);
-                    } while (!appData.isNumber(sum));
-                }
-
-            } while (!appData.isNumber(sum));
+            // Внутрь массива screens сохраняем элемент в виде объекта с id, name и price
+            appData.screens.push({ id: i, name: name, price: price });
         }
 
-        return sum;
+        // Цикл про дополнительный тип услуг
+        for (let i = 0; i < 2; i++) {
+            let name = '';
+            let price = 0;
+            // let nameDefault = 'Дополнительный тип №' + (i + 1);
+            let nameDefault;
+            // let priceDefault = i + 200;
+            let priceDefault;
+
+            if (i == 0) {
+                nameDefault = 'Вёрстка модального окна';
+                priceDefault = 2000;
+            } else {
+                nameDefault = 'Адаптация модального окна';
+                priceDefault = 2500;
+            }
+
+            // 1-4)- ответ на вопрос "Какой дополнительный тип услуги нужен?" - строка
+            do {
+                name = prompt('Какой дополнительный тип услуги нужен?', nameDefault);
+            } while (appData.isNumber(name));
+
+            // 1-5) - ответ на вопрос "Сколько это будет стоить?" - число
+            do {
+                price = prompt('Сколько это будет стоить?', priceDefault);
+            } while (!appData.isNumber(price));
+
+            appData.services[name] = +price;
+        }
+
     },
 
-    // Превращаем функцию getFullPrice в метод объекта appData
+    // Метод расчитывает стоимость наших экранов и дополнительных услуг
+    addPrices: function () {
+        // Цикл считает сумму всех типов экранов
+        // for (let screen of appData.screens) {
+        //     appData.screenPrice += +screen.price;
+        // }
+
+        // Метод reduce считает сумму всех типов экранов
+        appData.screenPrice = appData.screens.reduce(function (sum, item) {
+            return sum + +item.price; // previousValue/sum состоит из суммы всех item.price
+        }, 0);
+
+        for (let key in appData.services) {
+            appData.allServicePrices += appData.services[key];
+        }
+    },
+
+    // Метод возвращает сумму всех дополнительных услуг с проверкой, что введённые данные являются числом, которые мы получаем на вопрос "Сколько это будет стоить"
+    // getAllServicePrices: function () {
+    //     for (let key in appData.services) {
+    //         appData.allServicePrices += appData.services[key];
+    //     }
+    // },
+
     // Метод возвращает сумму стоимости верстки и стоимости дополнительных услуг
     getFullPrice: function () {
-        return appData.screenPrice + appData.allServicePrices;
+        appData.fullPrice = appData.screenPrice + appData.allServicePrices;
     },
 
-    // Превращаем функцию getServicePercentPrices в метод объекта appData
     // Метод возвращает итоговую стоимость за вычетом процента отката(итоговая стоимость - сумма отката)
     getServicePercentPrices: function () {
-        return appData.fullPrice - Math.ceil(appData.fullPrice * (appData.rollback / 100));
+        appData.servicePercentPrice = appData.fullPrice - Math.ceil(appData.fullPrice * (appData.rollback / 100));
     },
 
-    // Превращаем функцию getTitle в метод объекта appData
     // Метод возвращает title меняя его таким образом: первый символ с большой буквы, остальные с маленькой". Учесть вариант что строка может начинаться с пустых символов.
     getTitle: function () {
-        return appData.title.trim()[0].toUpperCase() + appData.title.trim().substring(1).toLocaleLowerCase();
+        appData.title = appData.title.trim()[0].toUpperCase() + appData.title.trim().substring(1).toLocaleLowerCase();
     },
 
-    // Превращаем функцию getRollbackMessage в метод объекта appData
     // Метод возвращает итоговое значение скидки, если она предусмотрена
-    getRollbackMessage: function () {
-        if (appData.fullPrice >= 30000) {
+    getRollbackMessage: function (price) {
+        if (price >= 30000) {
             return 'Даем скидку в 10%.';
-        } else if (appData.fullPrice >= 15000 && appData.fullPrice < 30000) {
+        } else if (price >= 15000 && price < 30000) {
             return 'Даем скидку в 5%.';
-        } else if (appData.fullPrice > 0 && appData.fullPrice < 15000) {
+        } else if (price > 0 && price < 15000) {
             return 'Скидка не предусмотрена.';
         } else {
             return 'Что то пошло не так.';
         }
     },
 
-    // 2) Создать в объекте метод start и перенести в него вызов метода asking и переопределение свойств. Вне самого объекта запускаем только метод start который в нужном порядке выполнит все действия.
-    start: function () {
-        appData.asking();
-        appData.title = appData.getTitle();
-        appData.allServicePrices = appData.getAllServicePrices();
-        appData.fullPrice = appData.getFullPrice();
-        appData.servicePercentPrice = appData.getServicePercentPrices();
-        // appData.loggerMessage();
-        appData.logger();
-    },
-
-    // 3) Создать в объекте метод logger который будет выводить в консоль необходимую информацию. Данный метод запускаем в самом конце метода start (после того как все расчеты уже были произведены)
+    // 3) Метод logger выводит в консоль необходимую информациюи запускается в самом конце метода start (после того как все расчеты уже были произведены)
     logger: function () {
-        console.log('Название проекта ' + '"' + appData.title + '"');
-        console.log('Типы экранов, которые нужно разработать: ' + appData.screens.join(', ') + '.');
+        console.log('Название проекта ' + '"' + appData.title + '".');
+        // console.log('Типы экранов, которые нужно разработать: ' + appData.screens.join(', ') + '.');
 
         if (appData.adaptiv == true) {
             console.log('Адаптив нужен.');
         } else { console.log('Адаптив не нужен.'); }
 
         console.log('Откат равен ' + appData.rollback + '%.');
-        console.log(appData.getRollbackMessage());
+        console.log(appData.getRollbackMessage(appData.fullPrice));
         console.log('Итоговая стоимость дополнительных услуг будет равна ' + appData.allServicePrices + 'р.');
         console.log('Итоговая стоимость будет равна ' + appData.fullPrice + 'р.');
         console.log('Итоговая стоимость с учётом вычета отката будет равна ' + appData.servicePercentPrice + 'р.');
+        console.log(appData.screens);
+
 
         // 4) Вывести в консоль из метода logger все свойства и методы объекта appData с помощью цикла for in
-        for (let key in appData) {
-            console.log('Ключ ' + key + '. ' + 'Значение: ' + appData[key] + '.');
-        }
-    },
+        // for (let key in appData) {
+        //     console.log('Ключ ' + key + '. ' + 'Значение: ' + appData[key] + '.');
+        // }
+    }
 
     // Метод возвращает информацию в удобночитаемом формате
-    loggerMessage: function () {
-        console.log('Название проекта ' + '"' + appData.title + '"');
-        console.log('Типы экранов, которые нужно разработать: ' + appData.screens.join(', ') + '.');
+    // loggerMessage: function () {
+    //     console.log('Название проекта ' + '"' + appData.title + '"');
+    //     console.log('Типы экранов, которые нужно разработать: ' + appData.screens.join(', ') + '.');
 
-        if (appData.adaptiv == true) {
-            console.log('Адаптив нужен.');
-        } else { console.log('Адаптив не нужен.'); }
+    //     if (appData.adaptiv == true) {
+    //         console.log('Адаптив нужен.');
+    //     } else { console.log('Адаптив не нужен.'); }
 
-        console.log('Откат равен ' + appData.rollback + '%.');
-        console.log(appData.getRollbackMessage());
-        console.log('Итоговая стоимость дополнительных услуг будет равна ' + appData.allServicePrices + 'р.');
-        console.log('Итоговая стоимость будет равна ' + appData.fullPrice + 'р.');
-        console.log('Итоговая стоимость с учётом вычета отката будет равна ' + appData.servicePercentPrice + 'р.');
-    }
+    //     console.log('Откат равен ' + appData.rollback + '%.');
+    //     console.log(appData.getRollbackMessage());
+    //     console.log('Итоговая стоимость дополнительных услуг будет равна ' + appData.allServicePrices + 'р.');
+    //     console.log('Итоговая стоимость будет равна ' + appData.fullPrice + 'р.');
+    //     console.log('Итоговая стоимость с учётом вычета отката будет равна ' + appData.servicePercentPrice + 'р.');
+    // }
 };
 
 // Вызов методов объекта appData
 appData.start();
-
-
 
 
 // appData.title = appData.getTitle();
