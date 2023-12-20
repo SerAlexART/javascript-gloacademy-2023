@@ -206,31 +206,26 @@ const appData = {
 
 // * Домашнее задание
 // 1) Получить заголовок "Калькулятор верстки" через метод getElementsByTagName. (тэг h1, получить именно элемент, а не коллекцию)
-const title = document.getElementById('title');
-console.log(title);
+const title = document.getElementById('title').textContent;
 
 // 2) Получить кнопки "Рассчитать" и "Сброс" через метод getElementsByClassName. (класс handler_btn)
-const handlerBtn = document.getElementsByClassName('handler_btn');
-console.dir(handlerBtn);
+const handlerBtnCalculate = document.getElementsByClassName('handler_btn')[0];
+
+const handlerBtnReset = document.getElementsByClassName('handler_btn')[1];
 
 // 3) Получить кнопку "+" под выпадающим списком через метод querySelector. (класс screen-btn)
 const screenBtn = document.querySelector('.screen-btn');
-console.log(screenBtn);
 
 // 4) Получить все элементы с классом other-items в две разные переменные. В первую элементы у которых так же присутствует класс percent, во вторую элементы у которых так же присутствует класс number через метод querySelectorAll.
 const otherItemsPercent = document.querySelectorAll('.other-items.percent');
-console.log(otherItemsPercent);
 
 const otherItemsNumber = document.querySelectorAll('.other-items.number');
-console.log(otherItemsNumber);
 
 // 5) Получить input type=range через его родителя с классом rollback одним запросом через метод querySelector.
 const inputRange = document.querySelector('.rollback input[type="range"]');
-console.log(inputRange);
 
 // 6) Получить span с классом range-value через его родителя с классом rollback одним запросом через метод querySelector.
 const rangeValue = document.querySelector('.rollback span.range-value');
-console.log(rangeValue);
 
 // 7) Получить все инпуты с классом total-input справа через метод getElementsByClassName. (класс total-input, получить именно элементы, а не коллекции)
 const totalInputs = document.getElementsByClassName('total-input');
@@ -242,9 +237,18 @@ for (let input of totalInputs) {
 
 // 8) Получить все блоки с классом screen в изменяемую переменную ( let ) через метод querySelectorAll (далее мы будем переопределять ее значение)
 let screen = document.querySelectorAll('.screen');
-console.log(screen);
+
 
 // Вывод значений в консоль
+console.log(title);
+console.log(handlerBtnCalculate);
+console.log(handlerBtnReset);
+console.log(screenBtn);
+console.log(otherItemsPercent);
+console.log(otherItemsNumber);
+console.log(inputRange);
+console.log(rangeValue);
+console.log(screen);
 // console.log('Итоговая стоимость будет равна ' + appData.fullPrice + ', а с учётом вычета отката будет равна ' + appData.servicePercentPrice);
 
 // showTypeOf('Название проекта ' + '"' + title + '".');
