@@ -1,36 +1,99 @@
 'use strict';
 
-// Объявление переменных
-// Функция проверки типа
-// const showTypeOf = function (variable) {
-//     console.log(variable, typeof variable);
-// };
+// * Объявление переменных
+
+// 1) Получить заголовок "Калькулятор верстки" через метод getElementsByTagName. (тэг h1, получить именно элемент, а не коллекцию)
+const title = document.getElementsByTagName('h1')[0];
+
+// 2) Получить кнопки "Рассчитать" и "Сброс" через метод getElementsByClassName. (класс handler_btn)
+const handlerBtnStartCalculate = document.getElementsByClassName('handler_btn')[0];
+
+const handlerBtnResetCalculate = document.getElementsByClassName('handler_btn')[1];
+// 3) Получить кнопку "+" под выпадающим списком через метод querySelector. (класс screen-btn)
+const screenBtnPlus = document.querySelector('.screen-btn');
+
+// 4) Получить все элементы с классом other-items в две разные переменные. В первую элементы у которых так же присутствует класс percent, во вторую элементы у которых так же присутствует класс number через метод querySelectorAll.
+const otherItemsPercent = document.querySelectorAll('.other-items.percent');
+
+const otherItemsNumber = document.querySelectorAll('.other-items.number');
+
+// 5) Получить input type=range через его родителя с классом rollback одним запросом через метод querySelector.
+const inputRange = document.querySelector('.rollback input[type="range"]');
+
+// 6) Получить span с классом range-value через его родителя с классом rollback одним запросом через метод querySelector.
+const rangeValue = document.querySelector('.rollback span.range-value');
+
+// 7) Получить все инпуты с классом total-input справа через метод getElementsByClassName. (класс total-input, получить именно элементы, а не коллекции)
+const totalInput = document.getElementsByClassName('total-input')[0];
+const totalInputCount = document.getElementsByClassName('total-input')[1];
+const totalInputCountOther = document.getElementsByClassName('total-input')[2];
+const totalInputFullCount = document.getElementsByClassName('total-input')[3];
+const totalInputCountRollback = document.getElementsByClassName('total-input')[4];
+
+// 8) Получить все блоки с классом screen в изменяемую переменную ( let ) через метод querySelectorAll (далее мы будем переопределять ее значение)
+let screens = document.querySelectorAll('.screen');
 
 
-// Объект appData
+
+
+// * Объект appData
 const appData = {
     title: '',
     screens: [],
     screenPrice: 0,
+    screenCount: 0,
     adaptiv: true,
     rollback: 15,
-    allServicePrices: 0,
+    servicePricesPercent: 0,
+    servicePricesNumber: 0,
     fullPrice: 0,
     servicePercentPrice: 0,
-    services: {},
+    servicesPercent: {},
+    servicesNumber: {},
+
+    // Данный метод будет запускаться во время считывания нашего когда, то-есть загрузки страницы
+    init: function () {
+        appData.addTitle();
+        // handlerBtnStartCalculate.removeEventListener('click', appData.start);
+        handlerBtnStartCalculate.addEventListener('click', appData.noStart);
+        handlerBtnStartCalculate.addEventListener('click', appData.start);
+        screenBtnPlus.addEventListener('click', appData.addScreenBlock);
+        inputRange.addEventListener('input', appData.changeRollback);
+        appData.showRollback();
+    },
+
+    addTitle: function () {
+        document.title = title.textContent;
+    },
+
+    noStart: function () {
+        // handlerBtnStartCalculate.removeEventListener('click', appData.start);
+
+
+        // console.log(appData.screens);
+        console.log(totalInputCount.value);
+
+        if (totalInputCount.value === 0) {
+            console.log('Можно 1');
+        } else {
+            console.log('Низя 2');
+        }
+
+
+    },
 
     // Метод start запускает вызов функций
     start: function () {
-        appData.asking();
-
+        // alert('Рассчёт запущен!');
+        appData.addServices();
+        appData.addScreens();
         appData.addPrices();
-        appData.getTitle();
-        // appData.getAllServicePrices();
-        appData.getFullPrice();
-        appData.getServicePercentPrices();
 
-        // appData.loggerMessage();
-        appData.logger();
+        console.log(appData);
+
+
+        appData.showResult();
+        // appData.logger();
     },
 
     //  Чуть ли не лучшая проверка в JS на число
@@ -38,82 +101,87 @@ const appData = {
         return !isNaN(parseFloat(num)) && isFinite(num);
     },
 
-    // Метод с вопросами о проекте
-    asking: function () {
+    // Метод показывает результат
+    showResult: function () {
+        totalInput.value = appData.screenPrice;
+        totalInputCount.value = appData.screenCount;
+        totalInputCountOther.value = appData.servicePricesPercent + appData.servicePricesNumber;
+        totalInputFullCount.value = appData.fullPrice;
 
-        // 1-1) - ответ на вопрос "Как называется ваш проект?" - строка
-        do {
-            appData.title = prompt('Как называется ваш проект?', 'Калькулятор верстки');
-        } while (appData.isNumber(appData.title));
-        // appData.screens = prompt('Какие типы экранов нужно разработать?', 'Простые, Сложные, Интерактивные').toLocaleLowerCase().split(', ');
+        totalInputCountRollback.value = appData.servicePercentPrice;
 
-        // do {
-        //     appData.screenPrice = +prompt('Сколько будет стоить данная работа?', '12000');
-        // } while (!appData.isNumber(appData.screenPrice));
 
-        appData.adaptiv = confirm('Нужен ли адаптив на сайте?');
+        // console.log('Показать результат');
+    },
 
-        // Цикл с типом экранов
-        for (let i = 0; i < 2; i++) {
-            let name = '';
-            let price = 0;
-            // let nameDefault = 'Тип экрана №' + (i + 1);
-            let nameDefault;
-            // let priceDefault = i + 100;
-            let priceDefault;
+    // Метод показывает значение по умолчанию rollback у range
+    showRollback: function () {
+        rangeValue.textContent = appData.rollback + '%';
 
-            if (i == 0) {
-                nameDefault = 'Простые';
-                priceDefault = 1000;
-            } else {
-                nameDefault = 'Сложные';
-                priceDefault = 1500;
-            }
+        inputRange.value = appData.rollback;
+    },
 
-            // 1-2) - ответ на вопрос "Какие типы экранов нужно разработать?" - строка
-            do {
-                name = prompt('Какие типы экранов нужно разработать?', nameDefault);
-            } while (appData.isNumber(name));
+    // Метод меняет значение rollback при изменении range
+    changeRollback: function (event) {
+        rangeValue.textContent = event.target.value + '%';
+        appData.rollback = event.target.value;
+    },
 
-            // 1-3) - ответ на вопрос "Сколько будет стоить данная работа?" - число
-            do {
-                price = prompt('Сколько будет стоить данная работа?', priceDefault);
-            } while (!appData.isNumber(price));
+    // Метод заполняет свойство массива screens объектами на основе данных из вёрстки
+    addScreens: function () {
+        screens = document.querySelectorAll('.screen');
+
+        screens.forEach(function (screen, index) {
+
+            // Получаем select
+            const select = screen.querySelector('select');
+
+            // Получаем input
+            const input = screen.querySelector('input');
+
+            // Получаем textContent выбранного select
+            const selectName = select.options[select.selectedIndex].textContent;
 
             // Внутрь массива screens сохраняем элемент в виде объекта с id, name и price
-            appData.screens.push({ id: i, name: name, price: price });
-        }
+            appData.screens.push({
+                id: index,
+                name: selectName,
+                price: +select.value * +input.value,
+                count: +input.value
+            });
+        });
 
-        // Цикл про дополнительный тип услуг
-        for (let i = 0; i < 2; i++) {
-            let name = '';
-            let price = 0;
-            // let nameDefault = 'Дополнительный тип №' + (i + 1);
-            let nameDefault;
-            // let priceDefault = i + 200;
-            let priceDefault;
+        // console.log(appData.screens);
+    },
 
-            if (i == 0) {
-                nameDefault = 'Вёрстка модального окна';
-                priceDefault = 2000;
-            } else {
-                nameDefault = 'Адаптация модального окна';
-                priceDefault = 2500;
+    // Метод заполняет свойства дополнительных объектов servicesPercent и servicesNumber ключами из выбранных checkbox
+    addServices: function () {
+        otherItemsPercent.forEach(function (item) {
+            const check = item.querySelector(['input[type=checkbox]']);
+            const label = item.querySelector(['label']);
+            const input = item.querySelector(['input[type=text]']);
+
+            if (check.checked) {
+                appData.servicesPercent[label.textContent] = +input.value;
             }
 
-            // 1-4)- ответ на вопрос "Какой дополнительный тип услуги нужен?" - строка
-            do {
-                name = prompt('Какой дополнительный тип услуги нужен?', nameDefault);
-            } while (appData.isNumber(name));
+        });
 
-            // 1-5) - ответ на вопрос "Сколько это будет стоить?" - число
-            do {
-                price = prompt('Сколько это будет стоить?', priceDefault);
-            } while (!appData.isNumber(price));
+        otherItemsNumber.forEach(function (item) {
+            const check = item.querySelector(['input[type=checkbox]']);
+            const label = item.querySelector(['label']);
+            const input = item.querySelector(['input[type=text]']);
 
-            appData.services[name] = +price;
-        }
+            if (check.checked) {
+                appData.servicesNumber[label.textContent] = +input.value;
+            }
+        });
+    },
 
+    // Метод добавляет новый блок с экранами
+    addScreenBlock: function () {
+        const cloneScreen = screens[0].cloneNode(true);
+        screens[screens.length - 1].after(cloneScreen);
     },
 
     // Метод расчитывает стоимость наших экранов и дополнительных услуг
@@ -128,129 +196,47 @@ const appData = {
             return sum + +item.price; // previousValue/sum состоит из суммы всех item.price
         }, 0);
 
-        for (let key in appData.services) {
-            appData.allServicePrices += appData.services[key];
+        // Считаем сумму всех дополнительных услуг с фиксированным значением и не привязанных к %
+        for (let key in appData.servicesNumber) {
+            appData.servicePricesNumber += appData.servicesNumber[key];
         }
-    },
 
-    // Метод возвращает сумму стоимости верстки и стоимости дополнительных услуг
-    getFullPrice: function () {
-        appData.fullPrice = appData.screenPrice + appData.allServicePrices;
-    },
+        // Считаем сумму всех дополнительных услуг привязанных к %
+        for (let key in appData.servicesPercent) {
+            appData.servicePricesPercent += Math.ceil(appData.screenPrice * (appData.servicesPercent[key] / 100));
+        }
 
-    // Метод возвращает итоговую стоимость за вычетом процента отката(итоговая стоимость - сумма отката)
-    getServicePercentPrices: function () {
+        // Считаем сумму основных экранов + дополнительные услуги с фиксированной ценой + дополнительные услуги привязанные к %
+        appData.fullPrice = appData.screenPrice + appData.servicePricesNumber + appData.servicePricesPercent;
+
+        // Считаем итоговую стоимость за вычетом процента отката(итоговая стоимость - сумма отката)
         appData.servicePercentPrice = appData.fullPrice - Math.ceil(appData.fullPrice * (appData.rollback / 100));
-    },
 
-    // Метод возвращает title меняя его таким образом: первый символ с большой буквы, остальные с маленькой". Учесть вариант что строка может начинаться с пустых символов.
-    getTitle: function () {
-        appData.title = appData.title.trim()[0].toUpperCase() + appData.title.trim().substring(1).toLocaleLowerCase();
-    },
-
-    // Метод возвращает итоговое значение скидки, если она предусмотрена
-    getRollbackMessage: function (price) {
-        if (price >= 30000) {
-            return 'Даем скидку в 10%.';
-        } else if (price >= 15000 && price < 30000) {
-            return 'Даем скидку в 5%.';
-        } else if (price > 0 && price < 15000) {
-            return 'Скидка не предусмотрена.';
-        } else {
-            return 'Что то пошло не так.';
-        }
+        // Метод reduce считает общее количество всех экранов
+        appData.screenCount = appData.screens.reduce(function (sum, item) {
+            return sum + +item.count;
+        }, 0);
     },
 
     // 3) Метод logger выводит в консоль необходимую информациюи запускается в самом конце метода start (после того как все расчеты уже были произведены)
     logger: function () {
         console.log('Название проекта ' + '"' + appData.title + '".');
-        // console.log('Типы экранов, которые нужно разработать: ' + appData.screens.join(', ') + '.');
 
         if (appData.adaptiv == true) {
             console.log('Адаптив нужен.');
         } else { console.log('Адаптив не нужен.'); }
 
         console.log('Откат равен ' + appData.rollback + '%.');
-        console.log(appData.getRollbackMessage(appData.fullPrice));
         console.log('Итоговая стоимость дополнительных услуг будет равна ' + appData.allServicePrices + 'р.');
         console.log('Итоговая стоимость будет равна ' + appData.fullPrice + 'р.');
         console.log('Итоговая стоимость с учётом вычета отката будет равна ' + appData.servicePercentPrice + 'р.');
         console.log(appData.screens);
-
-
-        // 4) Вывести в консоль из метода logger все свойства и методы объекта appData с помощью цикла for in
-        // for (let key in appData) {
-        //     console.log('Ключ ' + key + '. ' + 'Значение: ' + appData[key] + '.');
-        // }
     }
 
-    // Метод возвращает информацию в удобночитаемом формате
-    // loggerMessage: function () {
-    //     console.log('Название проекта ' + '"' + appData.title + '"');
-    //     console.log('Типы экранов, которые нужно разработать: ' + appData.screens.join(', ') + '.');
-
-    //     if (appData.adaptiv == true) {
-    //         console.log('Адаптив нужен.');
-    //     } else { console.log('Адаптив не нужен.'); }
-
-    //     console.log('Откат равен ' + appData.rollback + '%.');
-    //     console.log(appData.getRollbackMessage());
-    //     console.log('Итоговая стоимость дополнительных услуг будет равна ' + appData.allServicePrices + 'р.');
-    //     console.log('Итоговая стоимость будет равна ' + appData.fullPrice + 'р.');
-    //     console.log('Итоговая стоимость с учётом вычета отката будет равна ' + appData.servicePercentPrice + 'р.');
-    // }
 };
 
-// Вызов методов объекта appData
-// appData.start();
-
-// * Домашнее задание
-// 1) Получить заголовок "Калькулятор верстки" через метод getElementsByTagName. (тэг h1, получить именно элемент, а не коллекцию)
-const title = document.getElementById('title');
-console.log(title);
-
-// 2) Получить кнопки "Рассчитать" и "Сброс" через метод getElementsByClassName. (класс handler_btn)
-const handlerBtn = document.getElementsByClassName('handler_btn');
-console.dir(handlerBtn);
-
-// 3) Получить кнопку "+" под выпадающим списком через метод querySelector. (класс screen-btn)
-const screenBtn = document.querySelector('.screen-btn');
-console.log(screenBtn);
-
-// 4) Получить все элементы с классом other-items в две разные переменные. В первую элементы у которых так же присутствует класс percent, во вторую элементы у которых так же присутствует класс number через метод querySelectorAll.
-const otherItemsPercent = document.querySelectorAll('.other-items.percent');
-console.log(otherItemsPercent);
-
-const otherItemsNumber = document.querySelectorAll('.other-items.number');
-console.log(otherItemsNumber);
-
-// 5) Получить input type=range через его родителя с классом rollback одним запросом через метод querySelector.
-const inputRange = document.querySelector('.rollback input[type="range"]');
-console.log(inputRange);
-
-// 6) Получить span с классом range-value через его родителя с классом rollback одним запросом через метод querySelector.
-const rangeValue = document.querySelector('.rollback span.range-value');
-console.log(rangeValue);
-
-// 7) Получить все инпуты с классом total-input справа через метод getElementsByClassName. (класс total-input, получить именно элементы, а не коллекции)
-const totalInputs = document.getElementsByClassName('total-input');
-
-for (let input of totalInputs) {
-    console.log(input);
-}
+// * Вызов методов объекта appData
+appData.init();
 
 
-// 8) Получить все блоки с классом screen в изменяемую переменную ( let ) через метод querySelectorAll (далее мы будем переопределять ее значение)
-let screen = document.querySelectorAll('.screen');
-console.log(screen);
-
-// Вывод значений в консоль
-// console.log('Итоговая стоимость будет равна ' + appData.fullPrice + ', а с учётом вычета отката будет равна ' + appData.servicePercentPrice);
-
-// showTypeOf('Название проекта ' + '"' + title + '".');
-// showTypeOf('Типы экранов, которые нужно разработать: ' + screens + '.');
-// showTypeOf('Данная работа будет стоить ' + screenPrice + 'р.');
-// showTypeOf(getRollbackMessage());
-// adaptiv == true ? showTypeOf('Адаптив нужен.') : showTypeOf('Адаптив не нужен.');
-// showTypeOf('Итоговая стоимость будет равна ' + fullPrice + 'р.');
-// showTypeOf('Итоговая стоимость с учётом вычета отката будет равна ' + servicePercentPrice + 'р.');
+// * Вывод значений в консоль
