@@ -50,36 +50,20 @@ const appData = {
     servicePercentPrice: 0,
     servicesPercent: {},
     servicesNumber: {},
+    isError: false,
 
     // Данный метод будет запускаться во время считывания нашего когда, то-есть загрузки страницы
     init: function () {
         appData.addTitle();
-        // handlerBtnStartCalculate.removeEventListener('click', appData.start);
-        handlerBtnStartCalculate.addEventListener('click', appData.noStart);
         handlerBtnStartCalculate.addEventListener('click', appData.start);
         screenBtnPlus.addEventListener('click', appData.addScreenBlock);
         inputRange.addEventListener('input', appData.changeRollback);
         appData.showRollback();
+        appData.addScreens();
     },
 
     addTitle: function () {
         document.title = title.textContent;
-    },
-
-    noStart: function () {
-        // handlerBtnStartCalculate.removeEventListener('click', appData.start);
-
-
-        // console.log(appData.screens);
-        console.log(totalInputCount.value);
-
-        if (totalInputCount.value === 0) {
-            console.log('Можно 1');
-        } else {
-            console.log('Низя 2');
-        }
-
-
     },
 
     // Метод start запускает вызов функций
@@ -132,26 +116,37 @@ const appData = {
         screens = document.querySelectorAll('.screen');
 
         screens.forEach(function (screen, index) {
-
-            // Получаем select
             const select = screen.querySelector('select');
-
-            // Получаем input
             const input = screen.querySelector('input');
-
-            // Получаем textContent выбранного select
             const selectName = select.options[select.selectedIndex].textContent;
 
+
             // Внутрь массива screens сохраняем элемент в виде объекта с id, name и price
-            appData.screens.push({
-                id: index,
-                name: selectName,
-                price: +select.value * +input.value,
-                count: +input.value
-            });
+
+            for (let i = 0; i < screens.length; i++) {
+                console.log('Цикл');
+
+                if (select.textContent === 'Тип экранов' || +input.value === 0) {
+                    appData.isError = true;
+                    console.log('Выберите тип и введите количество');
+                } else {
+                    appData.isError = false;
+
+                    appData.screens.push({
+                        id: index,
+                        name: selectName,
+                        price: +select.value * +input.value,
+                        count: +input.value
+                    });
+
+                    console.log('Расчёт разрешён');
+                }
+            }
         });
 
-        // console.log(appData.screens);
+        console.log(screens.length);
+        console.log(this.isError);
+
     },
 
     // Метод заполняет свойства дополнительных объектов servicesPercent и servicesNumber ключами из выбранных checkbox
