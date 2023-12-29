@@ -102,7 +102,7 @@ todoControl.addEventListener('submit', function (event) {
     event.preventDefault();
 
     // Пустые дела добавляться не должны
-    if (headerInput.value === '') {
+    if (headerInput.value.trim() === '') {
         alert('Заполните поле с планом =)');
     } else {
         // * 5) Создаём новый объект с текстом из введённого input
