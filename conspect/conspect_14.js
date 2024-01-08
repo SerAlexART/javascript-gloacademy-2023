@@ -313,4 +313,4 @@ const func_2 = () => ({
     city: 'SPB'
 });
 
-console.log(func_1());
+console.log(func_2());

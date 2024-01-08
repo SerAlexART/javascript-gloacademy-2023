@@ -41,13 +41,13 @@ const appData = {
 
     // Данный метод будет запускаться во время считывания нашего когда, то-есть загрузки страницы
     init: function () {
-        appData.addTitle();
+        this.addTitle();
         // handlerBtnStartCalculate.addEventListener('click', appData.start);
-        handlerBtnStartCalculate.addEventListener('click', appData.checkError);
-        screenBtnPlus.addEventListener('click', appData.addScreenBlock);
-        inputRange.addEventListener('input', appData.changeRollback);
-        appData.showRollback();
-        appData.addScreens();
+        handlerBtnStartCalculate.addEventListener('click', this.checkError);
+        screenBtnPlus.addEventListener('click', this.addScreenBlock);
+        inputRange.addEventListener('input', this.changeRollback);
+        this.showRollback();
+        this.addScreens();
     },
 
     // Метод запрещает расчёт, если поля не заполнены
@@ -155,6 +155,8 @@ const appData = {
     // Метод добавляет новый блок с экранами
     addScreenBlock: function () {
         const cloneScreen = screens[0].cloneNode(true);
+        cloneScreen.querySelector(['input[type=text]']).value = '';
+
         screens[screens.length - 1].after(cloneScreen);
     },
 
