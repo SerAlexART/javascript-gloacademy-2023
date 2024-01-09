@@ -22,7 +22,6 @@ const totalInputCountRollback = document.getElementsByClassName('total-input')[4
 
 let screens = document.querySelectorAll('.screen');
 
-
 // * Объект appData
 const appData = {
     title: '',
@@ -44,6 +43,7 @@ const appData = {
         this.addTitle();
         // handlerBtnStartCalculate.addEventListener('click', appData.start);
         handlerBtnStartCalculate.addEventListener('click', this.checkError);
+        handlerBtnResetCalculate.addEventListener('click', this.reset);
         screenBtnPlus.addEventListener('click', this.addScreenBlock);
         inputRange.addEventListener('input', this.changeRollback);
         this.showRollback();
@@ -52,8 +52,12 @@ const appData = {
 
     // Метод запрещает расчёт, если поля не заполнены
     checkError: function () {
+        const startAppData = appData.start.bind(appData);
+        const startBlock = appData.block.bind(appData);
+
         screens = document.querySelectorAll('.screen');
 
+        // ! appData
         appData.isError = false;
 
         screens.forEach(function (screen) {
@@ -61,12 +65,18 @@ const appData = {
             const input = screen.querySelector('input');
 
             if (select.value === '' || input.value === '') {
+                // ! appData
+                // console.log(this);
                 appData.isError = true;
             }
         });
 
+
         if (appData.isError === false) {
-            appData.start();
+            // appData.start();
+
+            startAppData();
+            startBlock();
         }
     },
 
@@ -78,10 +88,12 @@ const appData = {
     // Метод запускает вызов функций
     start: function () {
         // alert('Рассчёт запущен!');
-        appData.addServices();
-        appData.addScreens();
-        appData.addPrices();
-        appData.showResult();
+        // const addPrices = appData.addPrices.bind(appData);
+
+        this.addServices();
+        this.addScreens();
+        this.addPrices();
+        this.showResult();
     },
 
     //  Чуть ли не лучшая проверка в JS на число
@@ -91,22 +103,24 @@ const appData = {
 
     // Метод показывает результат
     showResult: function () {
-        totalInput.value = appData.screenPrice;
-        totalInputCount.value = appData.screenCount;
-        totalInputCountOther.value = appData.servicePricesPercent + appData.servicePricesNumber;
-        totalInputFullCount.value = appData.fullPrice;
-        totalInputCountRollback.value = appData.servicePercentPrice;
+        totalInput.value = this.screenPrice;
+        totalInputCount.value = this.screenCount;
+        totalInputCountOther.value = this.servicePricesPercent + this.servicePricesNumber;
+        totalInputFullCount.value = this.fullPrice;
+        totalInputCountRollback.value = this.servicePercentPrice;
     },
 
     // Метод показывает значение по умолчанию rollback у range
     showRollback: function () {
-        rangeValue.textContent = appData.rollback + '%';
-        inputRange.value = appData.rollback;
+        rangeValue.textContent = this.rollback + '%';
+        inputRange.value = this.rollback;
     },
 
     // Метод меняет значение rollback при изменении range
     changeRollback: function (event) {
         rangeValue.textContent = event.target.value + '%';
+        // ! appData
+        // console.log(this);
         appData.rollback = event.target.value;
     },
 
@@ -114,13 +128,13 @@ const appData = {
     addScreens: function () {
         screens = document.querySelectorAll('.screen');
 
-        screens.forEach(function (screen, index) {
+        screens.forEach((screen, index) => {
             const select = screen.querySelector('select');
             const input = screen.querySelector('input');
             const selectName = select.options[select.selectedIndex].textContent;
 
             // Внутрь массива screens сохраняем элемент в виде объекта с id, name и price
-            appData.screens.push({
+            this.screens.push({
                 id: index,
                 name: selectName,
                 price: +select.value * +input.value,
@@ -131,23 +145,23 @@ const appData = {
 
     // Метод заполняет свойства дополнительных объектов servicesPercent и servicesNumber ключами из выбранных checkbox
     addServices: function () {
-        otherItemsPercent.forEach(function (item) {
+        otherItemsPercent.forEach((item) => {
             const check = item.querySelector(['input[type=checkbox]']);
             const label = item.querySelector(['label']);
             const input = item.querySelector(['input[type=text]']);
 
             if (check.checked) {
-                appData.servicesPercent[label.textContent] = +input.value;
+                this.servicesPercent[label.textContent] = +input.value;
             }
         });
 
-        otherItemsNumber.forEach(function (item) {
+        otherItemsNumber.forEach((item) => {
             const check = item.querySelector(['input[type=checkbox]']);
             const label = item.querySelector(['label']);
             const input = item.querySelector(['input[type=text]']);
 
             if (check.checked) {
-                appData.servicesNumber[label.textContent] = +input.value;
+                this.servicesNumber[label.textContent] = +input.value;
             }
         });
     },
@@ -161,6 +175,7 @@ const appData = {
     },
 
     // Метод расчитывает стоимость наших экранов и дополнительных услуг
+
     addPrices: function () {
         // Цикл считает сумму всех типов экранов
         // for (let screen of appData.screens) {
@@ -168,35 +183,75 @@ const appData = {
         // }
 
         // Метод reduce считает сумму всех типов экранов
-        appData.screenPrice = appData.screens.reduce(function (sum, item) {
+        this.screenPrice = this.screens.reduce((sum, item) => {
             return sum + +item.price; // previousValue/sum состоит из суммы всех item.price
         }, 0);
 
         // Считаем сумму всех дополнительных услуг с фиксированным значением и не привязанных к %
-        for (let key in appData.servicesNumber) {
-            appData.servicePricesNumber += appData.servicesNumber[key];
+        for (let key in this.servicesNumber) {
+            this.servicePricesNumber += this.servicesNumber[key];
         }
 
         // Считаем сумму всех дополнительных услуг привязанных к %
-        for (let key in appData.servicesPercent) {
-            appData.servicePricesPercent += Math.ceil(appData.screenPrice * (appData.servicesPercent[key] / 100));
+        for (let key in this.servicesPercent) {
+            this.servicePricesPercent += Math.ceil(this.screenPrice * (this.servicesPercent[key] / 100));
         }
 
         // Считаем сумму основных экранов + дополнительные услуги с фиксированной ценой + дополнительные услуги привязанные к %
-        appData.fullPrice = appData.screenPrice + appData.servicePricesNumber + appData.servicePricesPercent;
+        this.fullPrice = this.screenPrice + this.servicePricesNumber + this.servicePricesPercent;
 
         // Считаем итоговую стоимость за вычетом процента отката(итоговая стоимость - сумма отката)
-        appData.servicePercentPrice = appData.fullPrice - Math.ceil(appData.fullPrice * (appData.rollback / 100));
+        this.servicePercentPrice = this.fullPrice - Math.ceil(this.fullPrice * (this.rollback / 100));
 
         // Метод reduce считает общее количество всех экранов
-        appData.screenCount = appData.screens.reduce(function (sum, item) {
+        this.screenCount = this.screens.reduce(function (sum, item) {
             return sum + +item.count;
         }, 0);
+    },
+
+
+    // Метод блокирует расчёт
+    block: function () {
+        screens = document.querySelectorAll('.screen');
+
+        handlerBtnStartCalculate.style.display = 'none';
+        handlerBtnResetCalculate.style.display = 'block';
+
+        screens.forEach((item) => {
+            const select = item.querySelector('select');
+            const input = item.querySelector(['input[type=text]']);
+
+            select.disabled = true;
+            input.disabled = true;
+        });
+
+        console.log('Block');
+    },
+
+
+    // Метод сбрасывает расчёт
+    reset: function () {
+        screens = document.querySelectorAll('.screen');
+
+        handlerBtnStartCalculate.style.display = 'block';
+        handlerBtnResetCalculate.style.display = 'none';
+
+        screens.forEach((item) => {
+            const select = item.querySelector('select');
+            const input = item.querySelector(['input[type=text]']);
+
+            select.disabled = false;
+            input.disabled = false;
+        });
+
+        console.log('Reset');
     }
 };
 
 // * Вызов методов объекта appData
 appData.init();
+
+
 
 
 // * Вывод значений в консоль
