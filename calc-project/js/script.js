@@ -228,9 +228,8 @@ const appData = {
         console.log('Block');
     },
 
-
-    // Метод сбрасывает расчёт
-    reset: function () {
+    // Метод разблокирует расчёт
+    unblock: function () {
         screens = document.querySelectorAll('.screen');
 
         handlerBtnStartCalculate.style.display = 'block';
@@ -243,6 +242,54 @@ const appData = {
             select.disabled = false;
             input.disabled = false;
         });
+    },
+
+    // Метод очищает типы экранов
+    clearScreens: function () {
+        screens = document.querySelectorAll('.screen');
+
+        console.log(screens);
+        console.log('clearScreens');
+    },
+
+    // Метод очищает результат
+    clearResult: function () {
+        totalInput.value = 0;
+        totalInputCount.value = 0;
+        totalInputCountOther.value = 0;
+        totalInputFullCount.value = 0;
+        totalInputCountRollback.value = 0;
+    },
+
+    // Метод очищает дополнительные сервисы
+    clearServices: function () {
+        otherItemsPercent.forEach((item) => {
+            const check = item.querySelector(['input[type=checkbox]']);
+
+            check.checked = false;
+        });
+
+        otherItemsNumber.forEach((item) => {
+            const check = item.querySelector(['input[type=checkbox]']);
+
+            check.checked = false;
+        });
+    },
+
+    // Метод возвращает откат к иходной точке
+    clearRollback: function () {
+        rangeValue.textContent = 15 + '%';
+        inputRange.value = 15;
+    },
+
+    // Метод сбрасывает расчёт и очищает калькулятор
+    reset: function () {
+        // ! appData
+        appData.unblock();
+        appData.clearScreens();
+        appData.clearResult();
+        appData.clearServices();
+        appData.clearRollback();
 
         console.log('Reset');
     }
