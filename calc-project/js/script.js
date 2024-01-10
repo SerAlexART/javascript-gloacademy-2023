@@ -171,6 +171,8 @@ const appData = {
         const cloneScreen = screens[0].cloneNode(true);
         cloneScreen.querySelector(['input[type=text]']).value = '';
 
+        screens = document.querySelectorAll('.screen');
+
         screens[screens.length - 1].after(cloneScreen);
     },
 
