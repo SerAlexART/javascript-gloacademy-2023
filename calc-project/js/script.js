@@ -246,9 +246,22 @@ const appData = {
 
     // Метод очищает типы экранов
     clearScreens: function () {
+        console.clear();
+
         screens = document.querySelectorAll('.screen');
 
-        console.log(screens);
+        screens.forEach((screen, index) => {
+            const select = screen.querySelector('select');
+            const input = screen.querySelector('input');
+
+            input.value = '';
+            select.selectedIndex = 0;
+
+            for (let i = screens.length - 1; i > 0; i--) {
+                screens[i].remove();
+            }
+        });
+
         console.log('clearScreens');
     },
 
