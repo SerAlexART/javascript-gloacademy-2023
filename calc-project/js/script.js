@@ -52,6 +52,7 @@ const appData = {
 
     // Метод запрещает расчёт, если поля не заполнены
     checkError: function () {
+        // ! appData
         const startAppData = appData.start.bind(appData);
         const startBlock = appData.block.bind(appData);
 
@@ -286,7 +287,7 @@ const appData = {
             }
         });
 
-        console.log('clearScreens');
+        appData.screens.length = 0;
     },
 
     // Метод очищает результат
@@ -319,6 +320,12 @@ const appData = {
         inputRange.value = 15;
     },
 
+    // Метод возвращает сумму услуг к исходной точке
+    // clearPrices: function () {
+
+    //     console.log('clearPrices');
+    // },
+
     // Метод сбрасывает расчёт и очищает калькулятор
     reset: function () {
         // ! appData
@@ -327,6 +334,7 @@ const appData = {
         appData.clearResult();
         appData.clearServices();
         appData.clearRollback();
+        // appData.clearPrices();
 
         console.log('Reset');
     }
