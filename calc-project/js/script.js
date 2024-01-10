@@ -66,12 +66,11 @@ const appData = {
 
             if (select.value === '' || input.value === '') {
                 // ! appData
-                // console.log(this);
                 appData.isError = true;
             }
         });
 
-
+        // ! appData
         if (appData.isError === false) {
             // appData.start();
 
@@ -120,7 +119,6 @@ const appData = {
     changeRollback: function (event) {
         rangeValue.textContent = event.target.value + '%';
         // ! appData
-        // console.log(this);
         appData.rollback = event.target.value;
     },
 
@@ -227,6 +225,18 @@ const appData = {
             input.disabled = true;
         });
 
+        otherItemsPercent.forEach((item) => {
+            const check = item.querySelector(['input[type=checkbox]']);
+
+            check.disabled = true;
+        });
+
+        otherItemsNumber.forEach((item) => {
+            const check = item.querySelector(['input[type=checkbox]']);
+
+            check.disabled = true;
+        });
+
         console.log('Block');
     },
 
@@ -244,11 +254,23 @@ const appData = {
             select.disabled = false;
             input.disabled = false;
         });
+
+        otherItemsPercent.forEach((item) => {
+            const check = item.querySelector(['input[type=checkbox]']);
+
+            check.disabled = false;
+        });
+
+        otherItemsNumber.forEach((item) => {
+            const check = item.querySelector(['input[type=checkbox]']);
+
+            check.disabled = false;
+        });
     },
 
     // Метод очищает типы экранов
     clearScreens: function () {
-        console.clear();
+        // console.clear();
 
         screens = document.querySelectorAll('.screen');
 
