@@ -8,7 +8,7 @@ const handlerBtnResetCalculate = document.getElementsByClassName('handler_btn')[
 
 const screenBtnPlus = document.querySelector('.screen-btn');
 
-const otherItemsPercent = document.querySelectorAll('.other-items.percent');
+let otherItemsPercent = document.querySelectorAll('.other-items.percent');
 const otherItemsNumber = document.querySelectorAll('.other-items.number');
 
 const inputRange = document.querySelector('.rollback input[type="range"]');
@@ -290,6 +290,39 @@ const appData = {
         appData.screens.length = 0;
     },
 
+
+    // Метод очищает дополнительные сервисы
+    clearServices: function () {
+        otherItemsPercent = document.querySelectorAll('.other-items.percent');
+
+
+        otherItemsPercent.forEach((item) => {
+            const check = item.querySelector(['input[type=checkbox]']);
+            const label = item.querySelector(['label']);
+            const input = item.querySelector(['input[type=text]']);
+
+            input.value = '';
+
+            if (check.checked) {
+                appData.servicesPercent[label.textContent] = +input.value;
+            }
+
+            check.checked = false;
+        });
+
+        console.log(otherItemsPercent);
+        // otherItemsPercent.length = 0;
+        // console.log(otherItemsPercent.length);
+
+        otherItemsNumber.forEach((item) => {
+            const check = item.querySelector(['input[type=checkbox]']);
+
+            check.checked = false;
+        });
+
+        // 11111
+    },
+
     // Метод очищает результат
     clearResult: function () {
         totalInput.value = 0;
@@ -297,21 +330,6 @@ const appData = {
         totalInputCountOther.value = 0;
         totalInputFullCount.value = 0;
         totalInputCountRollback.value = 0;
-    },
-
-    // Метод очищает дополнительные сервисы
-    clearServices: function () {
-        otherItemsPercent.forEach((item) => {
-            const check = item.querySelector(['input[type=checkbox]']);
-
-            check.checked = false;
-        });
-
-        otherItemsNumber.forEach((item) => {
-            const check = item.querySelector(['input[type=checkbox]']);
-
-            check.checked = false;
-        });
     },
 
     // Метод возвращает откат к иходной точке
