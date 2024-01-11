@@ -9,7 +9,7 @@ const handlerBtnResetCalculate = document.getElementsByClassName('handler_btn')[
 const screenBtnPlus = document.querySelector('.screen-btn');
 
 let otherItemsPercent = document.querySelectorAll('.other-items.percent');
-const otherItemsNumber = document.querySelectorAll('.other-items.number');
+let otherItemsNumber = document.querySelectorAll('.other-items.number');
 
 const inputRange = document.querySelector('.rollback input[type="range"]');
 const rangeValue = document.querySelector('.rollback span.range-value');
@@ -287,13 +287,14 @@ const appData = {
             }
         });
 
+        // ! appData
         appData.screens.length = 0;
     },
-
 
     // Метод очищает дополнительные сервисы
     clearServices: function () {
         otherItemsPercent = document.querySelectorAll('.other-items.percent');
+        otherItemsNumber = document.querySelectorAll('.other-items.number');
 
 
         otherItemsPercent.forEach((item) => {
@@ -304,23 +305,27 @@ const appData = {
             input.value = '';
 
             if (check.checked) {
+                // ! appData
                 appData.servicesPercent[label.textContent] = +input.value;
             }
 
             check.checked = false;
         });
 
-        console.log(otherItemsPercent);
-        // otherItemsPercent.length = 0;
-        // console.log(otherItemsPercent.length);
-
         otherItemsNumber.forEach((item) => {
             const check = item.querySelector(['input[type=checkbox]']);
+            const label = item.querySelector(['label']);
+            const input = item.querySelector(['input[type=text]']);
+
+            input.value = '';
+
+            if (check.checked) {
+                // ! appData
+                appData.servicesNumber[label.textContent] = +input.value;
+            }
 
             check.checked = false;
         });
-
-        // 11111
     },
 
     // Метод очищает результат
@@ -338,12 +343,6 @@ const appData = {
         inputRange.value = 15;
     },
 
-    // Метод возвращает сумму услуг к исходной точке
-    // clearPrices: function () {
-
-    //     console.log('clearPrices');
-    // },
-
     // Метод сбрасывает расчёт и очищает калькулятор
     reset: function () {
         // ! appData
@@ -352,7 +351,6 @@ const appData = {
         appData.clearResult();
         appData.clearServices();
         appData.clearRollback();
-        // appData.clearPrices();
 
         console.log('Reset');
     }
