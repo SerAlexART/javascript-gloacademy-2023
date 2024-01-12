@@ -22,7 +22,7 @@ const totalInputCountRollback = document.getElementsByClassName('total-input')[4
 
 let screens = document.querySelectorAll('.screen');
 
-// let resetTest;
+const cmsOpen = document.querySelector('#cms-open');
 
 // * Объект appData
 const appData = {
@@ -39,24 +39,9 @@ const appData = {
     servicesPercent: {},
     servicesNumber: {},
     isError: false,
-    // checkErrorStart: function () { },
-    // resetStart: function () { },
-    // changeRollbackStart: function () { },
-    // clearServicesStart: function () { },
-    // changeContext: function () {
-    //     this.checkErrorStart = this.checkErrorFunction.bind(appData);
-    //     this.resetStart = this.resetFunction.bind(appData);
-    //     this.changeRollbackStart = this.changeRollbackFunction.bind(appData);
-    //     this.clearServicesStart = this.clearServicesFunction.bind(appData);
-    // },
 
     // Данный метод будет запускаться во время считывания нашего когда, то-есть загрузки страницы
     init: function () {
-        // this.checkErrorStart = this.checkErrorFunction.bind(appData);
-        // this.resetStart = this.resetFunction.bind(appData);
-        // this.changeRollbackStart = this.changeRollbackFunction.bind(appData);
-        // this.changeContext();
-
         this.addTitle();
         // handlerBtnStartCalculate.addEventListener('click', appData.start);
         handlerBtnStartCalculate.addEventListener('click', this.checkError.bind(this));
@@ -70,7 +55,7 @@ const appData = {
     // Метод запрещает расчёт, если поля не заполнены
     checkError: function () {
         const startAppData = this.start.bind(this);
-        const blockCalculateStart = this.blockCalculateFunction.bind(this);
+        const blockCalculateStart = this.blockCalculate.bind(this);
 
         screens = document.querySelectorAll('.screen');
 
@@ -220,12 +205,12 @@ const appData = {
         }, 0);
     },
 
-
     // Метод блокирует расчёт
-    blockCalculateFunction: function () {
+    blockCalculate: function () {
         screens = document.querySelectorAll('.screen');
 
         screenBtnPlus.disabled = true;
+        cmsOpen.disabled = true;
 
         handlerBtnStartCalculate.style.display = 'none';
         handlerBtnResetCalculate.style.display = 'block';
@@ -249,8 +234,6 @@ const appData = {
 
             check.disabled = true;
         });
-
-        screenBtnPlus;
     },
 
     // Метод разблокирует расчёт
@@ -258,6 +241,8 @@ const appData = {
         screens = document.querySelectorAll('.screen');
 
         screenBtnPlus.disabled = false;
+        cmsOpen.disabled = false;
+        cmsOpen.checked = false;
 
         handlerBtnStartCalculate.style.display = 'block';
         handlerBtnResetCalculate.style.display = 'none';
@@ -281,8 +266,6 @@ const appData = {
 
             check.disabled = false;
         });
-
-
     },
 
     // Метод очищает типы экранов
