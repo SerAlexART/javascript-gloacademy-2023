@@ -39,36 +39,36 @@ const appData = {
     servicesPercent: {},
     servicesNumber: {},
     isError: false,
-    checkErrorStart: function () { },
-    resetStart: function () { },
-    changeRollbackStart: function () { },
-    clearServicesStart: function () { },
-    changeContext: function () {
-        this.checkErrorStart = this.checkErrorFunction.bind(appData);
-        this.resetStart = this.resetFunction.bind(appData);
-        this.changeRollbackStart = this.changeRollbackFunction.bind(appData);
-        this.clearServicesStart = this.clearServicesFunction.bind(appData);
-    },
+    // checkErrorStart: function () { },
+    // resetStart: function () { },
+    // changeRollbackStart: function () { },
+    // clearServicesStart: function () { },
+    // changeContext: function () {
+    //     this.checkErrorStart = this.checkErrorFunction.bind(appData);
+    //     this.resetStart = this.resetFunction.bind(appData);
+    //     this.changeRollbackStart = this.changeRollbackFunction.bind(appData);
+    //     this.clearServicesStart = this.clearServicesFunction.bind(appData);
+    // },
 
     // Данный метод будет запускаться во время считывания нашего когда, то-есть загрузки страницы
     init: function () {
         // this.checkErrorStart = this.checkErrorFunction.bind(appData);
         // this.resetStart = this.resetFunction.bind(appData);
         // this.changeRollbackStart = this.changeRollbackFunction.bind(appData);
-        this.changeContext();
+        // this.changeContext();
 
         this.addTitle();
         // handlerBtnStartCalculate.addEventListener('click', appData.start);
-        handlerBtnStartCalculate.addEventListener('click', this.checkErrorStart);
-        handlerBtnResetCalculate.addEventListener('click', this.resetStart);
+        handlerBtnStartCalculate.addEventListener('click', this.checkError.bind(this));
+        handlerBtnResetCalculate.addEventListener('click', this.reset.bind(this));
         screenBtnPlus.addEventListener('click', this.addScreenBlock);
-        inputRange.addEventListener('input', this.changeRollbackStart);
+        inputRange.addEventListener('input', this.changeRollback.bind(this));
         this.showRollback();
         this.addScreens();
     },
 
     // Метод запрещает расчёт, если поля не заполнены
-    checkErrorFunction: function () {
+    checkError: function () {
         const startAppData = this.start.bind(this);
         const blockCalculateStart = this.blockCalculateFunction.bind(this);
 
@@ -128,7 +128,7 @@ const appData = {
     },
 
     // Метод меняет значение rollback при изменении range
-    changeRollbackFunction: function (event) {
+    changeRollback: function (event) {
         rangeValue.textContent = event.target.value + '%';
         this.rollback = event.target.value;
     },
@@ -225,6 +225,8 @@ const appData = {
     blockCalculateFunction: function () {
         screens = document.querySelectorAll('.screen');
 
+        screenBtnPlus.disabled = true;
+
         handlerBtnStartCalculate.style.display = 'none';
         handlerBtnResetCalculate.style.display = 'block';
 
@@ -247,11 +249,15 @@ const appData = {
 
             check.disabled = true;
         });
+
+        screenBtnPlus;
     },
 
     // Метод разблокирует расчёт
     unblockCalculate: function () {
         screens = document.querySelectorAll('.screen');
+
+        screenBtnPlus.disabled = false;
 
         handlerBtnStartCalculate.style.display = 'block';
         handlerBtnResetCalculate.style.display = 'none';
@@ -275,6 +281,8 @@ const appData = {
 
             check.disabled = false;
         });
+
+
     },
 
     // Метод очищает типы экранов
@@ -297,7 +305,7 @@ const appData = {
     },
 
     // Метод очищает дополнительные сервисы
-    clearServicesFunction: function () {
+    clearServices: function () {
         otherItemsPercent = document.querySelectorAll('.other-items.percent');
         otherItemsNumber = document.querySelectorAll('.other-items.number');
 
@@ -345,11 +353,11 @@ const appData = {
     },
 
     // Метод сбрасывает расчёт и очищает калькулятор
-    resetFunction: function () {
+    reset: function () {
         this.unblockCalculate();
         this.clearScreens();
         this.clearResult();
-        this.clearServicesStart();
+        this.clearServices();
         this.clearRollback();
     }
 };
