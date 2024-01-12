@@ -22,6 +22,8 @@ const totalInputCountRollback = document.getElementsByClassName('total-input')[4
 
 let screens = document.querySelectorAll('.screen');
 
+// let resetTest;
+
 // * Объект appData
 const appData = {
     title: '',
@@ -37,46 +39,55 @@ const appData = {
     servicesPercent: {},
     servicesNumber: {},
     isError: false,
+    checkErrorStart: function () { },
+    resetStart: function () { },
+    changeRollbackStart: function () { },
+    clearServicesStart: function () { },
+    changeContext: function () {
+        this.checkErrorStart = this.checkErrorFunction.bind(appData);
+        this.resetStart = this.resetFunction.bind(appData);
+        this.changeRollbackStart = this.changeRollbackFunction.bind(appData);
+        this.clearServicesStart = this.clearServicesFunction.bind(appData);
+    },
 
     // Данный метод будет запускаться во время считывания нашего когда, то-есть загрузки страницы
     init: function () {
+        // this.checkErrorStart = this.checkErrorFunction.bind(appData);
+        // this.resetStart = this.resetFunction.bind(appData);
+        // this.changeRollbackStart = this.changeRollbackFunction.bind(appData);
+        this.changeContext();
+
         this.addTitle();
         // handlerBtnStartCalculate.addEventListener('click', appData.start);
-        handlerBtnStartCalculate.addEventListener('click', this.checkError);
-        handlerBtnResetCalculate.addEventListener('click', this.reset);
+        handlerBtnStartCalculate.addEventListener('click', this.checkErrorStart);
+        handlerBtnResetCalculate.addEventListener('click', this.resetStart);
         screenBtnPlus.addEventListener('click', this.addScreenBlock);
-        inputRange.addEventListener('input', this.changeRollback);
+        inputRange.addEventListener('input', this.changeRollbackStart);
         this.showRollback();
         this.addScreens();
     },
 
     // Метод запрещает расчёт, если поля не заполнены
-    checkError: function () {
-        // ! appData
-        const startAppData = appData.start.bind(appData);
-        const startBlock = appData.block.bind(appData);
+    checkErrorFunction: function () {
+        const startAppData = this.start.bind(this);
+        const blockCalculateStart = this.blockCalculateFunction.bind(this);
 
         screens = document.querySelectorAll('.screen');
 
-        // ! appData
-        appData.isError = false;
+        this.isError = false;
 
-        screens.forEach(function (screen) {
+        screens.forEach((screen) => {
             const select = screen.querySelector('select');
             const input = screen.querySelector('input');
 
             if (select.value === '' || input.value === '') {
-                // ! appData
-                appData.isError = true;
+                this.isError = true;
             }
         });
 
-        // ! appData
-        if (appData.isError === false) {
-            // appData.start();
-
+        if (this.isError === false) {
             startAppData();
-            startBlock();
+            blockCalculateStart();
         }
     },
 
@@ -117,10 +128,9 @@ const appData = {
     },
 
     // Метод меняет значение rollback при изменении range
-    changeRollback: function (event) {
+    changeRollbackFunction: function (event) {
         rangeValue.textContent = event.target.value + '%';
-        // ! appData
-        appData.rollback = event.target.value;
+        this.rollback = event.target.value;
     },
 
     // Метод заполняет свойство массива screens объектами на основе данных из вёрстки
@@ -212,7 +222,7 @@ const appData = {
 
 
     // Метод блокирует расчёт
-    block: function () {
+    blockCalculateFunction: function () {
         screens = document.querySelectorAll('.screen');
 
         handlerBtnStartCalculate.style.display = 'none';
@@ -237,12 +247,10 @@ const appData = {
 
             check.disabled = true;
         });
-
-        console.log('Block');
     },
 
     // Метод разблокирует расчёт
-    unblock: function () {
+    unblockCalculate: function () {
         screens = document.querySelectorAll('.screen');
 
         handlerBtnStartCalculate.style.display = 'block';
@@ -271,11 +279,9 @@ const appData = {
 
     // Метод очищает типы экранов
     clearScreens: function () {
-        // console.clear();
-
         screens = document.querySelectorAll('.screen');
 
-        screens.forEach((screen, index) => {
+        screens.forEach(function (screen) {
             const select = screen.querySelector('select');
             const input = screen.querySelector('input');
 
@@ -287,12 +293,11 @@ const appData = {
             }
         });
 
-        // ! appData
-        appData.screens.length = 0;
+        this.screens.length = 0;
     },
 
     // Метод очищает дополнительные сервисы
-    clearServices: function () {
+    clearServicesFunction: function () {
         otherItemsPercent = document.querySelectorAll('.other-items.percent');
         otherItemsNumber = document.querySelectorAll('.other-items.number');
 
@@ -305,10 +310,8 @@ const appData = {
             input.value = '';
 
             if (check.checked) {
-                // ! appData
-                appData.servicesPercent[label.textContent] = +input.value;
+                this.servicesPercent[label.textContent] = +input.value;
             }
-
             check.checked = false;
         });
 
@@ -320,10 +323,8 @@ const appData = {
             input.value = '';
 
             if (check.checked) {
-                // ! appData
-                appData.servicesNumber[label.textContent] = +input.value;
+                this.servicesNumber[label.textContent] = +input.value;
             }
-
             check.checked = false;
         });
     },
@@ -344,15 +345,12 @@ const appData = {
     },
 
     // Метод сбрасывает расчёт и очищает калькулятор
-    reset: function () {
-        // ! appData
-        appData.unblock();
-        appData.clearScreens();
-        appData.clearResult();
-        appData.clearServices();
-        appData.clearRollback();
-
-        console.log('Reset');
+    resetFunction: function () {
+        this.unblockCalculate();
+        this.clearScreens();
+        this.clearResult();
+        this.clearServicesStart();
+        this.clearRollback();
     }
 };
 
