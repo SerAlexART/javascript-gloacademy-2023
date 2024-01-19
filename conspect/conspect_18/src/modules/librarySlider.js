@@ -6,3 +6,5 @@ const sliderModule = () => {
 };
 
 module.exports = sliderModule;
+
+export default sliderModule;

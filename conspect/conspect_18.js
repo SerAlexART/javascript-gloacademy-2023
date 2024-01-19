@@ -152,16 +152,38 @@ console.log('3-6) .gitignore');
 
 // * 3-7) npx webpack - Собираем проект с Webpack
 console.log('3-7) npx webpack - Собираем проект с Webpack');
-//
+// Появляется папка dist, а внутри появляется файл main.js в котором миницифированы наши модули JS
 
 
 
+// * 3-8) npm run build - Запускаем Webpack с помощь npm run build
+//В package.json меняем команду test на build, а содержимое меняем на webpack. Теперь мы можем собирать нашку сборку командой npm run build
+// "build": "webpack"
+console.log('3-8) Запускаем Webpack с помощь npm run build');
 
 
+// * 3-9) npm run watch - Настройка watch для отслеживания
+// В package.json добавляем настройку в scripts "watch": "webpack --watch"
+// Запускаем Live Server и npm run watch
+console.log('3-9) Настройка watch для отслеживания');
 
 
+// * 3-10) Импорт и Экспорт стандарта ES6
+// Вместо module.exports = sliderModule; указываем exports default
+console.log('3-10) Импорт и Экспорт стандарта ES6');
 
+// * export default и import
+// Меняем строчку
+// module.exports = sliderModule;
+// на
+// * export default sliderModule;
 
+// Но в консоли будет ошибка. Если мы экспортируем по дефолту, то и импортировать должны по дефолту
+
+// Нужно перейти в index.js, найти наш модуль (sliderModule) и заменить строчку
+// const slider = require('./modules/slider');
+// на
+// * import sliderOne from './modules/slider';
 
 
 // 1) End Code

@@ -6,4 +6,6 @@ const burgerModule = () => {
     console.log(burger);
 };
 
-module.exports = burgerModule;
+// module.exports = burgerModule;
+
+export default burgerModule;
